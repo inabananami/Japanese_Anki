@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.itheima</groupId>
-    <artifactId>japaneseDemo</artifactId>
+    <artifactId>Japanese_Anki</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>JapaneseDemo</name>
     <description>JapaneseDemo</description>
