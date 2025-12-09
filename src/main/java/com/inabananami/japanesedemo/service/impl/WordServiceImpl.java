@@ -84,6 +84,9 @@ public class WordServiceImpl implements WordService {
         final int pageSize = 10;
         Integer offset = (pageNum - 1) * pageSize;
         List<WordVo> wordList = wordMapper.listWords(userId, pageSize, offset);
+        if(wordList.isEmpty()){
+            return Result.fail(412,"单词已展示完");
+        }
         return Result.success(wordList);
     }
 }

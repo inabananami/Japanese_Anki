@@ -7,9 +7,11 @@ import com.inabananami.japanesedemo.service.UserService;
 import com.inabananami.japanesedemo.utils.BCryptUtil;
 import com.inabananami.japanesedemo.utils.JwtUtil;
 import com.inabananami.japanesedemo.utils.ThreadLocalUtil;
+import com.inabananami.japanesedemo.vo.CurrentUserVo;
 import com.inabananami.japanesedemo.vo.Result;
 import com.inabananami.japanesedemo.vo.UserVo;
 import com.inabananami.japanesedemo.vo.param.SignUpParam;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,10 +26,14 @@ public class UserServiceImpl implements UserService {
 
     //用户注册
     public Result signUp(SignUpParam signUpParam) {
-        String encodedPassWord = BCryptUtil.encode(signUpParam.getPassword());
-        signUpParam.setPassword(encodedPassWord);
-        userMapper.signUp(signUpParam);
-        return Result.success(null);
+        if (signUpParam.getPassword().equals(signUpParam.getConfirmPassword())) {
+            String encodedPassWord = BCryptUtil.encode(signUpParam.getPassword());
+            signUpParam.setPassword(encodedPassWord);
+            userMapper.signUp(signUpParam);
+            return Result.success(null);
+        } else {
+            return Result.fail(413,"确认密码与输入密码不一致");
+        }
     }
     //用户登录(通过用户名查找用户)
     public Result login(String account, String password) {
@@ -66,6 +72,16 @@ public class UserServiceImpl implements UserService {
     public Result search(String keyWord) {
         List<UserVo> userVoList = userMapper.search(keyWord);
         return Result.success(userVoList);
+    }
+    //查询当前用户信息
+    public Result getCurrentUser() {
+        CurrentUserVo currentUserVo = new CurrentUserVo();
+        Map<String,Object> map = ThreadLocalUtil.get();
+        Integer userId = (Integer) map.get("userId");
+        User user = userMapper.findUserById(userId);
+        //转换为CurrentUserVo
+        BeanUtils.copyProperties(user, currentUserVo);
+        return Result.success(currentUserVo);
     }
     //注销用户
     @Override

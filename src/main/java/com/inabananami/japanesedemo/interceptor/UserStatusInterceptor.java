@@ -1,14 +1,12 @@
 package com.inabananami.japanesedemo.interceptor;
 
-import com.inabananami.japanesedemo.dao.mapper.UserMapper;
+import com.inabananami.japanesedemo.exception.ForbiddenException;
 import com.inabananami.japanesedemo.exception.UnauthorizedException;
 import com.inabananami.japanesedemo.utils.JwtUtil;
 import com.inabananami.japanesedemo.utils.ThreadLocalUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import com.inabananami.japanesedemo.dao.pojo.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -17,15 +15,11 @@ import java.util.Map;
 
 @Component
 public class UserStatusInterceptor implements HandlerInterceptor {
-    @Autowired
-    private UserMapper userMapper;
-
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        // 处理预检请求
-        if ("OPTIONS".equals(request.getMethod())) {
-            response.setStatus(HttpServletResponse.SC_OK);
-            return false;  // 不再继续处理
+        // 放行预检请求
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            return true; // 不验证 token，直接放行
         }
 
         String token = request.getHeader("Authorization");
@@ -38,8 +32,8 @@ public class UserStatusInterceptor implements HandlerInterceptor {
         Claims claims;
         try {
             claims = JwtUtil.parseToken(token);
-        } catch (Exception e){
-            throw new UnauthorizedException("登录状态无效或已过期");
+        } catch (Exception e) {
+            throw new ForbiddenException("登录状态无效或已过期");
         }
 
         Integer userId = ((Number) claims.get("userId")).intValue();

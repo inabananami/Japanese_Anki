@@ -18,4 +18,6 @@ public interface UserService {
     Result update(UserDto userDto);
     //注销用户
     Result delete();
+    //查询当前用户信息
+    Result getCurrentUser();
 }

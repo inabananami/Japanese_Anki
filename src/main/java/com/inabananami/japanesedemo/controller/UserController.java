@@ -38,6 +38,11 @@ public class UserController {
     public Result updateUser(@RequestBody @Validated UserDto userDto) {
          return userService.update(userDto);
     }
+    //查询当前用户信息
+    @GetMapping("/get-current-user")
+    public Result getCurrentUser() {
+        return userService.getCurrentUser();
+    }
     //注销用户
     @PostMapping("/delete-user")
     public Result deleteUser() {

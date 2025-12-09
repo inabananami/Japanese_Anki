@@ -16,6 +16,8 @@ public class SignUpParam {
     private String account;
     @Pattern(regexp = "^\\S{7,15}", message = "密码介于7-15位")
     private String password;
+    @NotNull(message = "确认密码不得为空")
+    private String confirmPassword;
     @Pattern(regexp = "^\\S{1,12}", message = "昵称介于1-12个字符")
     private String nickname;
 }

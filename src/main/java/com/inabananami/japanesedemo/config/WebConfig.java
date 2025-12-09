@@ -1,6 +1,7 @@
 package com.inabananami.japanesedemo.config;
 
 import com.inabananami.japanesedemo.interceptor.UserStatusInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -9,7 +10,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-
+    @Autowired
     private final UserStatusInterceptor userStatusInterceptor;
 
     public WebConfig(UserStatusInterceptor userStatusInterceptor) {
@@ -17,19 +18,14 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     //全局CORS配置
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins("http://127.0.0.1:5501", "http://localhost:5501")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowCredentials(true)
-                        .allowedHeaders("Authorization", "Content-Type")
-                        .maxAge(3600);  // 缓存预检请求的有效时间
-            }
-        };
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("http://127.0.0.1:5500", "http://localhost:5500", "http://localhost:5173")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowCredentials(true)
+                .allowedHeaders("*")
+                .maxAge(3600);  // 缓存预检请求的有效时间
     }
 
     //注册拦截器
