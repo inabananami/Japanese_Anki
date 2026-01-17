@@ -62,8 +62,8 @@ public class UserServiceImpl implements UserService {
         userMapper.update(userDto);
         return Result.success(null);
     }
-     //查询用户（id）
-     @Override
+    //查询用户（id）
+    @Override
     public User findUserById(Integer id) {
         return userMapper.findUserById(id);
     }

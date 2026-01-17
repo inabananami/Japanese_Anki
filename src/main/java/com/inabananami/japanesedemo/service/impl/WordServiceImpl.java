@@ -28,6 +28,7 @@ public class WordServiceImpl implements WordService {
         Integer userId = (Integer) map.get("userId");
         word.setCreateUser(userId);
         wordMapper.add(word);
+        //在review表里初始化复习参数
         reviewMapper.defaultAdd(ReviewLog.defaultSet(word));
         return Result.success(null);
     }
@@ -80,13 +81,14 @@ public class WordServiceImpl implements WordService {
     public Result listWords(Integer pageNum) {
         Map<String,Object> map = ThreadLocalUtil.get();
         Integer userId = (Integer) map.get("userId");
-        System.out.println(userId);
         final int pageSize = 10;
         Integer offset = (pageNum - 1) * pageSize;
         List<WordVo> wordList = wordMapper.listWords(userId, pageSize, offset);
         if(wordList.isEmpty()){
             return Result.fail(412,"单词已展示完");
         }
-        return Result.success(wordList);
+        Integer totalWords = wordMapper.countUserWord(userId);
+
+        return Result.success(Map.of("total", totalWords, "list", wordList));
     }
 }

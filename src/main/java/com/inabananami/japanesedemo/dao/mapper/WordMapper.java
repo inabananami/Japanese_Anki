@@ -20,4 +20,6 @@ public interface WordMapper {
     Word findWordById(Integer id);
     //查询所有单词
     List<WordVo> listWords(Integer userId, Integer pageSize, Integer offset);
+    //查询用户单词数量
+    Integer countUserWord(Integer userId);
 }

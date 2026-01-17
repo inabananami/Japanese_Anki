@@ -38,4 +38,7 @@
     <select id="listWords">
         select * from word where create_user=#{userId} limit #{pageSize} offset #{offset};
     </select>
+    <select id="countUserWord" parameterType="int" resultType="int">
+        select count(*) from word where create_user=#{userId};
+    </select>
 </mapper>
